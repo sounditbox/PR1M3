@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> {{ title }}</title>
+</head>
+<body>
+    <h1>Мои модели</h1>
+    <ul>
+        {% for model in models %}
+            <li>{{ model.name }}: {{ model.created_at|date:"Y-m-d H:i:s" }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
