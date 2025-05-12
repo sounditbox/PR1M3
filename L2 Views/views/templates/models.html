@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> {{ title }}</title>
+</head>
+<body>
+<h1><a href="{% url 'myapp:index' %}">Главная</a></h1>
+<h1>Мои модели</h1>
+<div>
+    {% for model in models %}
+    <div>
+        <p><a href="{% url 'myapp:one_model' model.id %}">{{ model.name }}</a>:
+            {{ model.created_at|date:"Y-m-d H:i:s" }}
+        </p>
+        <form method="delete" action="{% url 'myapp:delete_model' model.id %}">
+            {% csrf_token %}
+            <button type="submit">Удалить</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+<div>
+    <h3>Добавить модель</h3>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="Название">
+        <input type="text" name="description" placeholder="Описание">
+        <button type="submit">Добавить</button>
+    </form>
+</div>
+</body>
+</html>

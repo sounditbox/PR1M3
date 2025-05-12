@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<h1><a href="{% url 'myapp:index' %}">Главная</a></h1>
+<h5><a href="{% url 'myapp:models' %}">Все модели</a></h5>
+<h1>Модель {{ model.name }}</h1>
+<h2>Description : {{ model.description }}</h2>
+<h2>Создана: {{ model.created_at|date:"Y-m-d H:i:s" }}</h2>
+<form method="post" action="{% url 'myapp:delete_model' model.id %}">
+    {% csrf_token %}
+    <button type="submit">Удалить</button>
+</form>
+<div>
+    <h3>Редактировать</h3>
+    <form method="post">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="{{ model.name }}">
+    <input type="text" name="description" placeholder="{{ model.description }}">
+    <button type="submit">Сохранить</button>
+</form>
+</div>
+
+</body>
+</html>
