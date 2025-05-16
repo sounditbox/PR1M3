@@ -1,0 +1,52 @@
+{% extends 'myapp/base.html' %}
+
+{% block head %}{% endblock %}
+
+{% block content %}
+<div class="container d-flex flex-column">
+    <h1>Все модели</h1>
+    <div class="container">
+        <h3>Добавить модель</h3>
+        {% include 'myapp/edit_create_model_form.html' %}
+    </div>
+    <div class="container d-flex flex-column">
+
+        {% if models.count == 0 %}
+        <p>Пока нет моделей</p>
+        {% else %}
+        <p>Моделей: {{ models.count }}</p>
+        {% for model in models %}
+        <div class="container  d-flex flex-row">
+            <div class="card" style="width: 25rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ model.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        {{model.created_at}}
+                    </h6>
+                    <p class="card-text">
+                        {{ model.description|truncatechars:15}}
+                    </p>
+                    <div class="container text-center">
+                                <a href="{% url 'myapp:one_model' model.id %}"
+                                   class="card-link">Детали</a>
+                                <form method="delete"
+                                      action="{% url 'myapp:delete_model' model.id  %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-outline-danger"
+                                            type="submit">
+                                        Удалить
+                                    </button>
+                                </form>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
