@@ -1,0 +1,46 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<main class="container py-4">
+    <h1 class="mb-4">Все посты</h1>
+
+    <section class="mb-5">
+        <h3 class="mb-3">Добавить пост</h3>
+        {% include 'blog/create_post_form.html' %}
+    </section>
+
+    {% if posts.count == 0 %}
+    <p class="text-muted">Пока нет моделей</p>
+    {% else %}
+    <p class="mb-4">Всего постов: <strong>{{ posts.count }}</strong></p>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for post in posts %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                      {{ post.created_at}}
+                    </h6>
+                    <p class="card-text flex-grow-1">
+                        {{ post.content|truncatechars:60 }}
+                    </p>
+                    <div class="mt-3 d-flex justify-content-between">
+                        <a href="{% url 'blog:post_detail' post.id %}"
+                           class="btn btn-sm btn-primary">Подробнее</a>
+
+                        <button class="btn btn-sm btn-outline-danger"
+                                type="submit"
+                                onclick="location.href={% url 'blog:delete_post' post.id %}">
+                            Удалить
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

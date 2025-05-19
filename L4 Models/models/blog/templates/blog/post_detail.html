@@ -1,4 +1,4 @@
-{% extends 'myapp/base.html' %}
+{% extends 'blog/base.html' %}
 
 {% block content %}
 <main class="container py-4">
@@ -6,25 +6,20 @@
     <!-- Карточка с деталями модели -->
     <div class="card shadow-sm mb-5">
         <div class="card-body">
-            <h1 class="card-title">{{ model.name }}</h1>
+            <h1 class="card-title">{{ post.title }}</h1>
             <p class="card-subtitle mb-2 text-muted">
-                Создана: {{ model.created_at|date:"Y-m-d H:i" }}
+                Создана: {{ post.created_at|date:"Y-m-d H:i" }}
             </p>
             <p class="card-text mt-3">
-                {{ model.description }}
+                {{ post.content }}
             </p>
             <div class="mt-4 d-flex gap-2">
-                <a href="{% url 'myapp:all_models' %}"
-                   class="btn btn-secondary">
+                <a href="{% url 'blog:post_list' %}" class="btn btn-secondary">
                     ← Все модели
                 </a>
-                <form method="post"
-                      action="{% url 'myapp:delete_model' model.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger">
-                        Удалить
-                    </button>
-                </form>
+                <button onclick="window.location.href='{% url 'blog:delete_post' post.id %}'"
+                        class="btn btn-outline-danger" type="submit">Удалить
+                </button>
             </div>
         </div>
     </div>
@@ -33,7 +28,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <h3 class="card-title">Редактировать модель</h3>
-            {% include 'myapp/edit_create_model_form.html' %}
+            {% include 'blog/edit_post_form.html' %}
         </div>
     </div>
 

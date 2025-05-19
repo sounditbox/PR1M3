@@ -1,0 +1,15 @@
+<div class="container">
+    <form method="post" class="form"
+          action="{% url 'blog:update_post' post.id %}">
+        {% csrf_token %}
+        <input type="text" class="form-control" name="title"
+               placeholder="{{ post.title|default:'Заголовок' }}">
+        <input type="text" class="form-control" name="content"
+               placeholder="{{ post.content|default:'Содержание'}}">
+        <label for="is_published">Опубликовать</label>
+        <input type="checkbox" id="is_published"  name="is_published">
+        <br>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+</div>

@@ -14,10 +14,10 @@ body {
 }
 .navbar .navbar-brand,
 .navbar .nav-link {
-  color: #fff !important;
+  color: #666 !important;
 }
 .navbar .nav-link:hover {
-  color: #d0d4d9 !important;
+  color: #777 !important;
 }
 
 /* ===========================
@@ -62,7 +62,7 @@ body {
 footer {
   margin-top: 4rem;
   padding: 1rem 0;
-  background-color: #343a40;
+  background-color: #fff;
   color: #bbb;
   font-size: 0.9rem;
 }
