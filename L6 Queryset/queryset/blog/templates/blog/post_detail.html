@@ -1,0 +1,39 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<main class="container py-4">
+
+    <!-- Карточка с деталями модели -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-body">
+            <h1 class="card-title">{{ post.title }}</h1>
+            <p class="card-subtitle mb-2 text-muted">
+                Создана: {{ post.created_at|date:"Y-m-d H:i" }}
+            </p>
+            <p class="card-text mt-3">
+                {{ post.content }}
+            </p>
+            <div class="mt-4 d-flex gap-2">
+                <p>👀: {{ post.views }}</p>
+            </div>
+            <div class="mt-4 d-flex gap-2">
+                <a href="{% url 'blog:post_list' %}" class="btn btn-secondary">
+                    ← Все модели
+                </a>
+                <button onclick="window.location.href='{% url 'blog:post_delete' post.id %}'"
+                        class="btn btn-outline-danger" type="submit">Удалить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Карточка с формой редактирования -->
+    <div class="card shadow-sm">
+        <button class="btn btn-primary" type="button"
+                onclick="window.location.href='{% url 'blog:post_edit' post.id %}'">
+            Редактировать
+        </button>
+    </div>
+
+</main>
+{% endblock %}
