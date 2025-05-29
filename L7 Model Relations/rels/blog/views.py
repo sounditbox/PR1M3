@@ -1,10 +1,11 @@
 from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, \
     UpdateView, DeleteView
 
-from .models import Post
+from .models import Post, Comment, Author
 
 
 class IndexView(TemplateView):
@@ -23,6 +24,10 @@ class PostDetailView(DetailView):
         obj.save()
         return obj
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
 
 class PostListView(ListView):
     model = Post
@@ -34,7 +39,7 @@ class PostListView(ListView):
 
 class CreatePostView(CreateView):
     model = Post
-    fields = ['title', 'content', 'is_published']
+    fields = ['title', 'content', 'is_published', 'author']
     template_name = 'blog/post_create.html'
 
 
@@ -56,3 +61,11 @@ class SimpleView(View):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         return HttpResponse(self.message)
+
+
+def create_comment(request: HttpRequest, post_id: int) -> HttpResponse:
+    post = get_object_or_404(Post, id=post_id)
+    comment = Comment.objects.create(content=request.POST.get('content'),
+                                     author=Author.objects.first(),
+                                     post=post)
+    return redirect('blog:post_detail', post.id)

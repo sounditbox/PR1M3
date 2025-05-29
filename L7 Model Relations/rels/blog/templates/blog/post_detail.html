@@ -3,19 +3,30 @@
 {% block content %}
 <main class="container py-4">
 
-    <!-- Карточка с деталями модели -->
     <div class="card shadow-sm mb-5">
         <div class="card-body">
             <h1 class="card-title">{{ post.title }}</h1>
             <p class="card-subtitle mb-2 text-muted">
-                Создана: {{ post.created_at|date:"Y-m-d H:i" }}
+                Автор: {{ post.author }}
             </p>
-            <p class="card-text mt-3">
-                {{ post.content }}
+            <p class="card-subtitle mb-2 text-muted">
+                {{ post.created_at }}
             </p>
-            <div class="mt-4 d-flex gap-2">
+            <p class="card-subtitle mb-2 text-muted">
+                Категория: {{ post.category.title }}
+            </p>
+            <p class="card-subtitle mb-2 text-muted">
+                {% for tag in post.tags.all %}
+                    {{ tag.title }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+
+            <div class="mt-4 d-flex ">
                 <p>👀: {{ post.views }}</p>
             </div>
+            <p class="card-text mt-3 py-3">
+                {{ post.content }}
+            </p>
             <div class="mt-4 d-flex gap-2">
                 <a href="{% url 'blog:post_list' %}" class="btn btn-secondary">
                     ← Все модели
@@ -33,6 +44,28 @@
                 onclick="window.location.href='{% url 'blog:post_edit' post.id %}'">
             Редактировать
         </button>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        {% include 'blog/comment_create.html' %}
+        <div class="card-body">
+            <h2 class="card-title">Комментарии</h2>
+            {% for comment in post.comments.all %}
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <p class="card-subtitle mb-2 text-muted">
+                            {{ comment.author }}
+                        </p>
+                        <h4 class="card-text">{{ comment.content }}</h4>
+                        <p class="card-subtitle mb-2 text-muted">
+                            {{ comment.created_at }}
+                        </p>
+                    </div>
+                </div>
+            {% empty %}
+                <p>Пока нет комментариев</p>
+            {% endfor %}
+        </div>
     </div>
 
 </main>

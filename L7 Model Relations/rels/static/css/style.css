@@ -110,3 +110,12 @@ h1, h3 {
   background-color: #5a6268;
   border-color: #545b62;
 }
+
+#body {
+    height: 100vh;
+    margin:0;
+}
+.footer{
+    bottom:0;
+    position:sticky;
+}
