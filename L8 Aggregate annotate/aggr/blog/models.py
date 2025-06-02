@@ -20,6 +20,9 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['-created_at', 'title'])
+        ]
 
     def __str__(self):
         return self.title
