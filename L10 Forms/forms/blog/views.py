@@ -1,13 +1,13 @@
 from django.db.models import Avg, Count, Min, Max, F, Value
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, \
     UpdateView, DeleteView
 
 from .models import Post, Comment, Author
-
+from .forms import ContactForm
 
 class IndexView(TemplateView):
     template_name = 'blog/index.html'
@@ -96,3 +96,17 @@ def create_comment(request: HttpRequest, post_id: int) -> HttpResponse:
                                      author=Author.objects.first(),
                                      post=post)
     return redirect('blog:post_detail', post.id)
+
+
+def contacts(request: HttpRequest) -> HttpResponse:
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+        else:
+            form.add_error(None, 'Form is not valid')
+
+    else:
+        form = ContactForm()
+
+    return render(request, 'blog/contacts.html', {'form': form})

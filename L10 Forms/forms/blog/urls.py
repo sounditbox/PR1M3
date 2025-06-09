@@ -13,4 +13,5 @@ urlpatterns = [
     path('posts/<int:post_id>/comment/', views.create_comment, name='comment_create'),
     path('authors/<int:pk>/', views.AuthorDetailView.as_view(), name='author_detail'),
     path('example/', views.SimpleView.as_view(), name='example'),
+    path('contacts/', views.contacts, name='contacts'),
 ]
