@@ -7,11 +7,23 @@ class PublishedManager(models.Manager):
 
 
 class Post(models.Model):
+    STATUS_CHOICES = (
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('archived', 'Archived'),
+        ('deleted', 'Deleted'),
+
+    )
+    PUBLISHED = 'published'
+    DRAFT = 'draft'
+    ARCHIVED = 'archived'
+    DELETED = 'deleted'
+
     title = models.CharField(max_length=200)
     content = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
     views = models.PositiveIntegerField(default=0)
     author = models.ForeignKey('Author', related_name='posts',
                                on_delete=models.CASCADE)
@@ -36,6 +48,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name_plural = 'Categories'
 
 
 class Comment(models.Model):
