@@ -1,4 +1,4 @@
-from django.db.models import Avg, Count, Min, Max, F, Value
+from django.db.models import Avg, Count, Min, Max, F
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -6,8 +6,9 @@ from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, \
     UpdateView, DeleteView
 
+from .forms import ContactForm, PostForm, CommentForm
 from .models import Post, Comment, Author
-from .forms import ContactForm
+
 
 class IndexView(TemplateView):
     template_name = 'blog/index.html'
@@ -44,6 +45,11 @@ class PostDetailView(DetailView):
         obj.save(update_fields=['views'])
         return obj
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = CommentForm()
+        return context
+
 
 class PostListView(ListView):
     model = Post
@@ -55,13 +61,14 @@ class PostListView(ListView):
 
 class CreatePostView(CreateView):
     model = Post
-    fields = ['title', 'content', 'is_published', 'author']
+    form_class = PostForm
+    # fields = ['title', 'content', 'status', 'author', 'category']
     template_name = 'blog/post_create.html'
 
 
 class UpdatePostView(UpdateView):
     model = Post
-    fields = ['title', 'content', 'is_published']
+    fields = ['title', 'content', 'status']
     template_name = 'blog/post_edit.html'
     pk_url_kwarg = 'id'
 
@@ -92,9 +99,14 @@ class SimpleView(View):
 
 def create_comment(request: HttpRequest, post_id: int) -> HttpResponse:
     post = get_object_or_404(Post, id=post_id)
-    comment = Comment.objects.create(content=request.POST.get('content'),
-                                     author=Author.objects.first(),
-                                     post=post)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = Author.objects.first()
+            comment.save()
+            return redirect('blog:post_detail', post.id)
     return redirect('blog:post_detail', post.id)
 
 

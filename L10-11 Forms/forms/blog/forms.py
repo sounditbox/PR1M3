@@ -1,8 +1,8 @@
 from django import forms
 from django.core.validators import MaxLengthValidator
 
-
-# insert your forms here
+from .models import Post
+from .validators import validate_spam
 
 
 class ContactForm(forms.Form):
@@ -41,3 +41,83 @@ class ContactForm(forms.Form):
         if 'spam' in name:
             raise forms.ValidationError('Нельзя отправлять спам!')
         return name
+
+
+class PostForm(forms.ModelForm):
+    extra = forms.CharField(required=False, validators=[validate_spam])
+
+    class Meta:
+        model = Post
+        fields = ['title', 'image', 'content', 'status', 'author', 'category']
+
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Заголовок'}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Содержимое'}),
+            'status': forms.Select(attrs={'class': 'form-control'}, choices=Post.STATUS_CHOICES),
+            'author': forms.Select(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
+        }
+        error_messages = {
+            'title': {
+                'required': 'Поле обязательно для заполнения',
+                'max_length': 'Длина превышает 200 символов',
+            },
+            'content': {
+                'required': 'Поле обязательно для заполнения',
+            },
+            'status': {
+                'required': 'Поле обязательно для заполнения',
+            },
+            'author': {
+                'required': 'Поле обязательно для заполнения',
+            },
+            'category': {
+                'required': 'Поле обязательно для заполнения',
+            }
+        }
+        labels = {
+            'title': 'Заголовок',
+            'content': 'Содержимое',
+            'status': 'Статус',
+            'author': 'Автор',
+            'category': 'Категория',
+            'image': 'Изображение',
+        }
+        help_texts = {
+            'title': 'Введите заголовок поста',
+            'content': 'Введите содержимое поста',
+            'status': 'Выберите статус поста',
+            'author': 'Выберите автора поста',
+            'category': 'Выберите категорию поста',
+            'image': 'Выберите изображение',
+        }
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        if 'spam' in title:
+            raise forms.ValidationError('Нельзя отправлять спам!')
+        return title
+
+    def clean_content(self):
+        content = self.cleaned_data['content']
+        if 'spam' in content:
+            raise forms.ValidationError('Нельзя отправлять спам!')
+        return content
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': '3'})
+        }
+        labels = {
+            'content': 'Комментарий'
+        }
+        error_messages = {
+            'content': {
+                'required': 'Поле обязательно для заполнения',
+            },
+        }

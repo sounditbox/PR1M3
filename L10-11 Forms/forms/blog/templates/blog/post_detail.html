@@ -24,6 +24,10 @@
             <div class="mt-4 d-flex ">
                 <p>👀: {{ post.annotated_views }}</p>
             </div>
+            <div class="mt-4 d-flex">
+                 <img src="{{ post.image.url }}" alt="image" width="1000">
+            </div>
+
             <p class="card-text mt-3 py-3">
                 {{ post.content }}
             </p>

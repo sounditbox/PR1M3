@@ -1,4 +1,6 @@
+from django.core.validators import MaxLengthValidator
 from django.db import models
+from .validators import validate_spam, CommentMaxLengthValidator
 
 
 class PublishedManager(models.Manager):
@@ -21,6 +23,7 @@ class Post(models.Model):
 
     title = models.CharField(max_length=200)
     content = models.TextField(blank=True)
+    image = models.ImageField(upload_to='images/', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
@@ -58,7 +61,8 @@ class Comment(models.Model):
                              related_name='comments')
     author = models.ForeignKey('Author', related_name='comments',
                                on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.TextField(validators=[validate_spam,
+                                           CommentMaxLengthValidator()])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
