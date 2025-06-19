@@ -1,0 +1,28 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Связаться с нами</h1>
+    <form method="post" class="mb-3" action="{% url 'blog:contacts' %}">
+        {{ form.non_field_errors }}
+        {% csrf_token %}
+<!--      <input type="text" class="form-control" id="name" name="name" placeholder="Как вас зовут?">&ndash;&gt;-->
+<!--        <input type="email" class="form-control" name="email" placeholder="Email">-->
+<!--        <input type="text" class="form-control" name="content" placeholder="Напишите ваши контакты">-->
+
+
+<!--        {{ form.as_p }}-->
+<!--        {{ form.as_table }}-->
+<!--        {{ form.as_ul }}-->
+
+        {% for field in form %}
+        <div class="mb-3">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+</div>
+{% endblock %}

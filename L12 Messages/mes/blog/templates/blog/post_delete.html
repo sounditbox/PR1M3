@@ -1,0 +1,16 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<main class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="card-title">Удаление поста</h1>
+            <form method="post">
+                {% csrf_token %}
+                <p>Вы действительно хотите удалить пост "{{ post.title }}"?</p>
+                <button type="submit" class="btn btn-danger">Удалить</button>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}
