@@ -1,13 +1,14 @@
+from django.contrib import messages
 from django.db.models import Avg, Count, Min, Max, F
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, \
     UpdateView, DeleteView
 
 from .forms import ContactForm, PostForm, CommentForm
-from .models import Post, Comment, Author
+from .mixins import MessageHandlerFormMixin
+from .models import Post, Author, Comment
 
 
 class IndexView(TemplateView):
@@ -59,24 +60,28 @@ class PostListView(ListView):
     ordering = ['-created_at']
 
 
-class CreatePostView(CreateView):
+class CreatePostView(CreateView, MessageHandlerFormMixin):
     model = Post
     form_class = PostForm
-    # fields = ['title', 'content', 'status', 'author', 'category']
     template_name = 'blog/post_create.html'
+    success_message = 'Пост создан!'
 
 
-class UpdatePostView(UpdateView):
+class UpdatePostView(UpdateView, MessageHandlerFormMixin):
     model = Post
-    fields = ['title', 'content', 'status']
+    form_class = PostForm
     template_name = 'blog/post_edit.html'
     pk_url_kwarg = 'id'
+    success_message = 'Пост обновлен!'
 
 
 class DeletePostView(DeleteView):
     model = Post
     template_name = 'blog/post_delete.html'
-    success_url = reverse_lazy('blog:post_list')
+
+    def get_success_url(self):
+        messages.success(self.request, 'Пост удален!')
+        return reverse_lazy('blog:post_list')
 
 
 class AuthorDetailView(DetailView):
@@ -90,13 +95,6 @@ class AuthorDetailView(DetailView):
         )
 
 
-class SimpleView(View):
-    message = "Default message"
-
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        return HttpResponse(self.message)
-
-
 def create_comment(request: HttpRequest, post_id: int) -> HttpResponse:
     post = get_object_or_404(Post, id=post_id)
     if request.method == 'POST':
@@ -106,19 +104,33 @@ def create_comment(request: HttpRequest, post_id: int) -> HttpResponse:
             comment.post = post
             comment.author = Author.objects.first()
             comment.save()
+            messages.success(request, 'Комментарий добавлен!')
             return redirect('blog:post_detail', post.id)
+        else:
+            messages.error(request, 'Что-то пошло не так...')
     return redirect('blog:post_detail', post.id)
+
+
+class DeleteCommentView(DeleteView):
+    model = Comment
+    template_name = 'blog/comment_delete.html'
+
+    def get_success_url(self):
+        messages.success(self.request, 'Комментарий удален!')
+        return reverse_lazy('blog:post_detail', kwargs={'id': self.object.post.id})
 
 
 def contacts(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
+            messages.success(request, 'Спасибо за обратную связь!')
             print(form.cleaned_data)
+            return redirect('blog:contacts')
         else:
+            messages.error(request, 'Что-то пошло не так...')
             form.add_error(None, 'Form is not valid')
+            return redirect('blog:contacts')
 
-    else:
-        form = ContactForm()
-
+    form = ContactForm()
     return render(request, 'blog/contacts.html', {'form': form})

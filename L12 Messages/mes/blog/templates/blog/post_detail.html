@@ -24,9 +24,11 @@
             <div class="mt-4 d-flex ">
                 <p>👀: {{ post.annotated_views }}</p>
             </div>
+            {% if post.image %}
             <div class="mt-4 d-flex">
                  <img src="{{ post.image.url }}" alt="image" width="1000">
             </div>
+            {% endif %}
 
             <p class="card-text mt-3 py-3">
                 {{ post.content }}
@@ -64,6 +66,9 @@
                         <p class="card-subtitle mb-2 text-muted">
                             {{ comment.created_at }}
                         </p>
+                        <button onclick="window.location.href='{% url 'blog:comment_delete' post.id comment.id %}'"
+                                class="btn btn-outline-danger" type="submit">Удалить
+                        </button>
                     </div>
                 </div>
             {% empty %}

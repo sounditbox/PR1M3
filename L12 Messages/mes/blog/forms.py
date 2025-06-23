@@ -1,7 +1,7 @@
 from django import forms
 from django.core.validators import MaxLengthValidator
 
-from .models import Post
+from .models import Post, Comment
 from .validators import validate_spam
 
 
@@ -108,7 +108,7 @@ class PostForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     class Meta:
-        model = Post
+        model = Comment
         fields = ['content']
         widgets = {
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': '3'})
