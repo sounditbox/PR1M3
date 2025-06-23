@@ -37,23 +37,33 @@
                 <a href="{% url 'blog:post_list' %}" class="btn btn-secondary">
                     ← Все модели
                 </a>
+                {% if user.is_authenticated  %}
                 <button onclick="window.location.href='{% url 'blog:post_delete' post.id %}'"
                         class="btn btn-outline-danger" type="submit">Удалить
                 </button>
+                {% endif %}
             </div>
         </div>
     </div>
 
     <!-- Карточка с формой редактирования -->
+    {% if user.is_authenticated  %}
     <div class="card shadow-sm">
         <button class="btn btn-primary" type="button"
                 onclick="window.location.href='{% url 'blog:post_edit' post.id %}'">
             Редактировать
         </button>
     </div>
+    {% endif %}
 
     <div class="card shadow-sm mt-4">
-        {% include 'blog/comment_create.html' %}
+        {% if user.is_authenticated  %}
+            {% include 'blog/comment_create.html' %}
+        {% else %}
+            <div class="card-body">
+                <p>Чтобы оставить комментарий, <a href="{% url 'users:login' %}">войдите</a></p>
+            </div>
+        {% endif %}
         <div class="card-body">
             <h2 class="card-title">Комментарии</h2>
             {% for comment in post.comments.all %}

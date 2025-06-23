@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_extensions',
 
     'blog',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,7 @@ MESSAGE_TAGS = {
     messages.WARNING: "warning",
     messages.ERROR: "danger",
 }
+
+LOGIN_URL = "users:login"
+LOGIN_REDIRECT_URL = "blog:post_list"
+LOGOUT_REDIRECT_URL = "blog:post_list"

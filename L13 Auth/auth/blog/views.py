@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Avg, Count, Min, Max, F
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -60,7 +62,7 @@ class PostListView(ListView):
     ordering = ['-created_at']
 
 
-class CreatePostView(CreateView, MessageHandlerFormMixin):
+class CreatePostView(LoginRequiredMixin, CreateView, MessageHandlerFormMixin):
     model = Post
     form_class = PostForm
     template_name = 'blog/post_create.html'
@@ -75,7 +77,7 @@ class UpdatePostView(UpdateView, MessageHandlerFormMixin):
     success_message = 'Пост обновлен!'
 
 
-class DeletePostView(DeleteView):
+class DeletePostView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'blog/post_delete.html'
 
@@ -94,7 +96,7 @@ class AuthorDetailView(DetailView):
             post_count=Count('posts')
         )
 
-
+@login_required
 def create_comment(request: HttpRequest, post_id: int) -> HttpResponse:
     post = get_object_or_404(Post, id=post_id)
     if request.method == 'POST':
@@ -111,7 +113,7 @@ def create_comment(request: HttpRequest, post_id: int) -> HttpResponse:
     return redirect('blog:post_detail', post.id)
 
 
-class DeleteCommentView(DeleteView):
+class DeleteCommentView(LoginRequiredMixin,DeleteView):
     model = Comment
     template_name = 'blog/comment_delete.html'
 
@@ -121,6 +123,7 @@ class DeleteCommentView(DeleteView):
 
 
 def contacts(request: HttpRequest) -> HttpResponse:
+    print(request.user)
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():

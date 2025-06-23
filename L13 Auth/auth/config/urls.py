@@ -23,6 +23,7 @@ from .settings import DEBUG, MEDIA_URL, MEDIA_ROOT
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("blog.urls", namespace="blog")),
+    path("users/", include("users.urls", namespace="users")),
 ]
 
 if DEBUG:

@@ -1,4 +1,5 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light"
+     style="background-color: #e3f2fd;">
     <a class="navbar-brand" href="#">PyRushBlog</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarNav" aria-controls="navbarNav"
@@ -16,6 +17,27 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'blog:contacts' %}">Связаться с нами</a>
             </li>
+
+            {% if user.is_authenticated %}
+
+            <li class="nav-item d-flex">
+                <p class="nav-link">{{ user }}</p>
+            </li>
+            <li class="nav-item d-flex">
+                <form method="post" action="{% url 'users:logout' %}">
+                    {% csrf_token %}
+                    <input type="submit" value="Выйти" class="btn btn-primary">
+                </form>
+            </li>
+            {% else %}
+            <li class="nav-item d-flex">
+                <a class="btn btn-primary"
+                   href="{% url 'users:login' %}">Войти</a>
+            </li>
+            {% endif %}
+
+
+
         </ul>
     </div>
 </nav>
