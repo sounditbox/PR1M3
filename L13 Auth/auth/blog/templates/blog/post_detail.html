@@ -1,0 +1,81 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<main class="container py-4">
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-body">
+            <h1 class="card-title">{{ post.title }}</h1>
+            <p class="card-subtitle mb-2 text-muted">
+                <a href="{% url 'blog:author_detail' post.author.id %}">{{ post.author }}</a>
+            </p>
+            <p class="card-subtitle mb-2 text-muted">
+                {{ post.created_at }}
+            </p>
+            <p class="card-subtitle mb-2 text-muted">
+                Категория: {{ post.category.title }}
+            </p>
+            <p class="card-subtitle mb-2 text-muted">
+                {% for tag in post.tags.all %}
+                    {{ tag.title }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+
+            <div class="mt-4 d-flex ">
+                <p>👀: {{ post.annotated_views }}</p>
+            </div>
+            {% if post.image %}
+            <div class="mt-4 d-flex">
+                 <img src="{{ post.image.url }}" alt="image" width="1000">
+            </div>
+            {% endif %}
+
+            <p class="card-text mt-3 py-3">
+                {{ post.content }}
+            </p>
+            <div class="mt-4 d-flex gap-2">
+                <a href="{% url 'blog:post_list' %}" class="btn btn-secondary">
+                    ← Все модели
+                </a>
+                <button onclick="window.location.href='{% url 'blog:post_delete' post.id %}'"
+                        class="btn btn-outline-danger" type="submit">Удалить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Карточка с формой редактирования -->
+    <div class="card shadow-sm">
+        <button class="btn btn-primary" type="button"
+                onclick="window.location.href='{% url 'blog:post_edit' post.id %}'">
+            Редактировать
+        </button>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        {% include 'blog/comment_create.html' %}
+        <div class="card-body">
+            <h2 class="card-title">Комментарии</h2>
+            {% for comment in post.comments.all %}
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <p class="card-subtitle mb-2 text-muted">
+                            {{ comment.author }}
+                        </p>
+                        <h4 class="card-text">{{ comment.content }}</h4>
+                        <p class="card-subtitle mb-2 text-muted">
+                            {{ comment.created_at }}
+                        </p>
+                        <button onclick="window.location.href='{% url 'blog:comment_delete' post.id comment.id %}'"
+                                class="btn btn-outline-danger" type="submit">Удалить
+                        </button>
+                    </div>
+                </div>
+            {% empty %}
+                <p>Пока нет комментариев</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</main>
+{% endblock %}
