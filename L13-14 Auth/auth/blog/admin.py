@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Post, Author, Tag, Category, Comment
+from .models import Post, Tag, Category, Comment
 
 
 class InlineComment(admin.StackedInline):
@@ -60,12 +60,6 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'title')
     search_fields = ('title',)
 
-
-@admin.register(Author)
-class AuthorAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'joined_at')
-    list_display_links = ('id', 'name')
-    search_fields = ('name',)
 
 
 @admin.register(Tag)

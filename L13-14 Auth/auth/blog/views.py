@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, \
+    PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Avg, Count, Min, Max, F
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,8 +11,8 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
     UpdateView, DeleteView
 
 from .forms import ContactForm, PostForm, CommentForm
-from .mixins import MessageHandlerFormMixin
-from .models import Post, Author, Comment
+from .mixins import MessageHandlerFormMixin, IsAuthorMixin
+from .models import Post, Comment
 
 
 class IndexView(TemplateView):
@@ -25,7 +27,10 @@ class IndexView(TemplateView):
             max_views=Max('views'),
             unique_authors=Count('author', distinct=True)
         )
-        stats['average_views'] = round(stats['average_views'], 2)
+        avg_views = stats.get('average_views', 0)
+        if avg_views:
+            avg_views = round(avg_views, 2)
+        stats['average_views'] = avg_views
         context['stats'] = stats
         context['categories'] = Post.objects.values('category__title')
         return context
@@ -68,16 +73,26 @@ class CreatePostView(LoginRequiredMixin, CreateView, MessageHandlerFormMixin):
     template_name = 'blog/post_create.html'
     success_message = 'Пост создан!'
 
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
-class UpdatePostView(UpdateView, MessageHandlerFormMixin):
+
+class UpdatePostView(UpdateView, LoginRequiredMixin, IsAuthorMixin, MessageHandlerFormMixin):
     model = Post
     form_class = PostForm
     template_name = 'blog/post_edit.html'
     pk_url_kwarg = 'id'
     success_message = 'Пост обновлен!'
 
+    def get(self, request, *args, **kwargs):
+        post = self.get_object()
+        if post.author != self.request.user:
+            raise PermissionDenied
+        return super().get(request, *args, **kwargs)
 
-class DeletePostView(LoginRequiredMixin, DeleteView):
+
+class DeletePostView(LoginRequiredMixin, IsAuthorMixin, DeleteView):
     model = Post
     template_name = 'blog/post_delete.html'
 
@@ -85,16 +100,6 @@ class DeletePostView(LoginRequiredMixin, DeleteView):
         messages.success(self.request, 'Пост удален!')
         return reverse_lazy('blog:post_list')
 
-
-class AuthorDetailView(DetailView):
-    model = Author
-    template_name = 'blog/author_detail.html'
-    context_object_name = 'author'
-
-    def get_queryset(self):
-        return super().get_queryset().prefetch_related('posts').annotate(
-            post_count=Count('posts')
-        )
 
 @login_required
 def create_comment(request: HttpRequest, post_id: int) -> HttpResponse:
@@ -104,7 +109,7 @@ def create_comment(request: HttpRequest, post_id: int) -> HttpResponse:
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = post
-            comment.author = Author.objects.first()
+            comment.author = request.user
             comment.save()
             messages.success(request, 'Комментарий добавлен!')
             return redirect('blog:post_detail', post.id)
@@ -113,7 +118,7 @@ def create_comment(request: HttpRequest, post_id: int) -> HttpResponse:
     return redirect('blog:post_detail', post.id)
 
 
-class DeleteCommentView(LoginRequiredMixin,DeleteView):
+class DeleteCommentView(LoginRequiredMixin, IsAuthorMixin, DeleteView):
     model = Comment
     template_name = 'blog/comment_delete.html'
 
@@ -123,7 +128,6 @@ class DeleteCommentView(LoginRequiredMixin,DeleteView):
 
 
 def contacts(request: HttpRequest) -> HttpResponse:
-    print(request.user)
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():

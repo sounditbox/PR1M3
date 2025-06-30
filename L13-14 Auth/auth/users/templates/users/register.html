@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container">
     <h1>Регистрация</h1>
-    <form method="post" class="mb-3" action="{% url 'users:register' %}">
+    <form method="post" class="mb-3" action="{% url 'users:register' %}" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Зарегистрироваться</button>

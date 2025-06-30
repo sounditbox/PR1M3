@@ -90,6 +90,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -104,6 +105,9 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+if not DEBUG:
+    AUTH_PASSWORD_VALIDATORS = []
 
 
 # Internationalization
@@ -150,3 +154,5 @@ MESSAGE_TAGS = {
 LOGIN_URL = "users:login"
 LOGIN_REDIRECT_URL = "blog:post_list"
 LOGOUT_REDIRECT_URL = "blog:post_list"
+
+AUTH_USER_MODEL = "users.User"

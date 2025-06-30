@@ -41,7 +41,7 @@
                     <div class="mt-3 d-flex justify-content-between">
                         <a href="{% url 'blog:post_detail' post.id %}"
                            class="btn btn-sm btn-primary">Подробнее</a>
-                        {% if user.is_authenticated  %}
+                        {% if user.is_authenticated and user == post.author %}
                         <a class="btn btn-sm btn-outline-danger"
                                 href="{% url 'blog:post_delete' post.pk %}">
                             Удалить

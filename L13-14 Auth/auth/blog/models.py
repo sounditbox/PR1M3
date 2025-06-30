@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.core.validators import MaxLengthValidator
 from django.db import models
 from .validators import validate_spam, CommentMaxLengthValidator
@@ -26,9 +27,9 @@ class Post(models.Model):
     image = models.ImageField(upload_to='images/', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PUBLISHED)
     views = models.PositiveIntegerField(default=0)
-    author = models.ForeignKey('Author', related_name='posts',
+    author = models.ForeignKey(get_user_model(), related_name='posts',
                                on_delete=models.CASCADE)
     category = models.ForeignKey('Category', related_name='posts',
                                  on_delete=models.SET_NULL, null=True)
@@ -59,7 +60,7 @@ class Category(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE,
                              related_name='comments')
-    author = models.ForeignKey('Author', related_name='comments',
+    author = models.ForeignKey(get_user_model(), related_name='comments',
                                on_delete=models.CASCADE)
     content = models.TextField(validators=[validate_spam,
                                            CommentMaxLengthValidator()])
@@ -73,12 +74,6 @@ class Comment(models.Model):
         ordering = ['-created_at']
 
 
-class Author(models.Model):
-    name = models.CharField(max_length=100)
-    joined_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
 
 
 class Tag(models.Model):

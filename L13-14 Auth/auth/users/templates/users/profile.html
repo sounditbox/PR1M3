@@ -1,0 +1,118 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="card" style="width: 38rem;">
+        {% if user.avatar %}
+        <img src="{{ user.avatar.url }}" class="card-img-top" alt="avatar">
+        {% else %}
+        <img src="{% static 'img/default_avatar.png' %}"
+             class="img-thumbnail card-img-top" alt="avatar" width="200">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ user.username }}</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Email: {{ user.email }}</li>
+        </ul>
+        <div class="card-body">
+            <a href="#" class="card-link">Github</a>
+        </div>
+        {% if user == request.user %}
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">
+            Редактировать
+        </button>
+        {% endif %}
+    </div>
+</div>
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col">
+            <h1>{{ user.name }}</h1>
+            <p class="card-subtitle mb-2 text-muted">
+                Присоединился: {{ user.date_joined}}
+            </p>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <h1>Посты</h1>
+        {% for post in user.posts.all %}
+
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+                <p class="card-subtitle mb-2 text-muted"><a
+                        href="{% url 'blog:post_detail' post.pk %}">
+                    {{post.title }}</a>
+                </p>
+                <p class="card-text">
+                    {{ post.content }}
+                </p>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">Пока не создано ни одно поста</p>
+
+        {% endfor %}
+    </div>
+
+    <div class="container">
+        <h1>Комментарии</h1>
+        {% for comment in user.comments.all %}
+
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+                <p class="card-subtitle mb-2 text-muted">
+                    <a href="{% url 'blog:post_detail' comment.post.pk %}">
+                        {{ comment.post.title }}
+                    </a>
+                </p>
+                <p class="card-text">
+                    {{ comment.content }}
+                </p>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">Пока не создано ни одного комментария</p>
+        {% endfor %}
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Изменить
+                    профиль</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <form method="post" class="modal-body" action="{% url 'users:profile_edit' user.pk %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">Закрыть
+                    </button>
+                    <button type="submit" class="btn btn-primary">Сохранить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
