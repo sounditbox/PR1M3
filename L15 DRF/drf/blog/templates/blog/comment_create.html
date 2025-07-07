@@ -1,0 +1,12 @@
+<div class="card-body">
+    <h2 class="card-title">Добавить комментарий</h2>
+    <form method="post" action="{% url 'blog:comment_create' post.id %}">
+        {% csrf_token %}
+<!--        <div class="mb-3">-->
+<!--            <textarea class="form-control" id="content" name="content"-->
+<!--                      placeholder="Ваш комментарий" rows="3"></textarea>-->
+<!--        </div>-->
+        {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+</div>

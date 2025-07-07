@@ -1,0 +1,14 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<div class="container">
+    <h1>Вход</h1>
+    <form method="post" class="mb-3" action="{% url 'users:login' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+</div>
+<div class="container">
+    <p>Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрируйтесь</a></p>
+</div>
+{% endblock %}
