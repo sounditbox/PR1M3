@@ -1,9 +1,8 @@
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.viewsets import ViewSet, ModelViewSet
+from rest_framework import generics
+from rest_framework.viewsets import ModelViewSet
 
-from blog.api.serializers import CommentSerializer
-from blog.models import Comment
+from blog.api.serializers import CommentSerializer, PostSerializer
+from blog.models import Comment, Post
 
 
 # class CommentApiView(APIView):
@@ -26,3 +25,9 @@ class CommentApiView(ModelViewSet):
     model = Comment
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+
+class PostApiView(ModelViewSet):
+    model = Post
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
