@@ -40,7 +40,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     category = PrimaryKeyRelatedField(queryset=Category.objects.all())
-    author = PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
+    author = PrimaryKeyRelatedField(queryset=get_user_model().objects.all(), required=False)
     tags = TagSerializer(many=True, read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
 
@@ -50,9 +50,6 @@ class PostSerializer(serializers.ModelSerializer):
                   'tags', 'comments', 'author')
         read_only_fields = ('created_at', 'updated_at', 'category', 'tags', 'comments')
 
-    def create(self, validated_data):
-        validated_data['author'] = get_user_model().objects.first()
-        return super().create(validated_data)
 
 
 class PostListSerializer(serializers.ModelSerializer):
