@@ -1,0 +1,36 @@
+[
+  {"model": "posts.category", "pk": 1, "fields": {"name": "Technology"}},
+  {"model": "posts.category", "pk": 2, "fields": {"name": "Health"}},
+  {"model": "posts.category", "pk": 3, "fields": {"name": "Travel"}},
+
+  {"model": "posts.tag", "pk": 1, "fields": {"name": "django"}},
+  {"model": "posts.tag", "pk": 2, "fields": {"name": "api"}},
+  {"model": "posts.tag", "pk": 3, "fields": {"name": "tips"}},
+  {"model": "posts.tag", "pk": 4, "fields": {"name": "tutorial"}},
+  {"model": "posts.tag", "pk": 5, "fields": {"name": "news"}},
+
+  {"model": "posts.article", "pk": 1, "fields": {"author": 1, "title": "Getting Started with Django REST Framework", "content": "Learn how to build a powerful API with Django REST Framework in just a few steps.", "category": 1, "status": "published", "views": 0, "image": null, "tags": [1, 2, 4], "created_at": "2025-07-01T00:00:00Z", "updated_at": "2025-07-01T00:00:00Z"}},
+  {"model": "posts.article", "pk": 2, "fields": {"author": 1, "title": "Top 10 Travel Destinations for 2025", "content": "Explore the most exciting travel spots to add to your bucket list this year.", "category": 3, "status": "published", "views": 0, "image": null, "tags": [3, 5], "created_at": "2025-07-01T00:00:00Z", "updated_at": "2025-07-01T00:00:00Z"}},
+  {"model": "posts.article", "pk": 3, "fields": {"author": 1, "title": "Health Benefits of Morning Walks", "content": "Discover why a daily morning walk can drastically improve your well-being.", "category": 2, "status": "published", "views": 0, "image": null, "tags": [3], "created_at": "2025-07-01T00:00:00Z", "updated_at": "2025-07-01T00:00:00Z"}},
+  {"model": "posts.article", "pk": 4, "fields": {"author": 1, "title": "Building Secure APIs: Best Practices", "content": "Security is crucial for any API—learn the top measures you should implement.", "category": 1, "status": "draft", "views": 0, "image": null, "tags": [1, 2, 5], "created_at": "2025-07-01T00:00:00Z", "updated_at": "2025-07-01T00:00:00Z"}},
+  {"model": "posts.article", "pk": 5, "fields": {"author": 1, "title": "Django ORM Tips and Tricks", "content": "Unlock the full potential of Django ORM with these useful tips.", "category": 1, "status": "published", "views": 0, "image": null, "tags": [1, 4], "created_at": "2025-07-01T00:00:00Z", "updated_at": "2025-07-01T00:00:00Z"}},
+  {"model": "posts.article", "pk": 6, "fields": {"author": 1, "title": "A Guide to Healthy Eating", "content": "Learn how to maintain a balanced diet without sacrificing flavor.", "category": 2, "status": "published", "views": 0, "image": null, "tags": [3], "created_at": "2025-07-01T00:00:00Z", "updated_at": "2025-07-01T00:00:00Z"}},
+  {"model": "posts.article", "pk": 7, "fields": {"author": 1, "title": "REST vs GraphQL: Which to Choose?", "content": "Compare two popular API paradigms and see which fits your project best.", "category": 1, "status": "published", "views": 0, "image": null, "tags": [2, 5], "created_at": "2025-07-01T00:00:00Z", "updated_at": "2025-07-01T00:00:00Z"}},
+  {"model": "posts.article", "pk": 8, "fields": {"author": 1, "title": "Backpacking Through Europe", "content": "Essential tips for an unforgettable backpacking adventure across Europe.", "category": 3, "status": "draft", "views": 0, "image": null, "tags": [3, 5], "created_at": "2025-07-01T00:00:00Z", "updated_at": "2025-07-01T00:00:00Z"}},
+  {"model": "posts.article", "pk": 9, "fields": {"author": 1, "title": "Optimizing Django Queries", "content": "Learn how to use select_related and prefetch_related to speed up your Django queries.", "category": 1, "status": "published", "views": 0, "image": null, "tags": [1], "created_at": "2025-07-01T00:00:00Z", "updated_at": "2025-07-01T00:00:00Z"}},
+  {"model": "posts.article", "pk": 10, "fields": {"author": 1, "title": "Healthy Meal Prep Ideas", "content": "Quick and nutritious meal prep recipes for a busy lifestyle.", "category": 2, "status": "published", "views": 0, "image": null, "tags": [3], "created_at": "2025-07-01T00:00:00Z", "updated_at": "2025-07-01T00:00:00Z"}},
+
+  {"model": "posts.comment", "pk": 1, "fields": {"author": 1, "article": 1, "content": "Great introduction to DRF!", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}},
+  {"model": "posts.comment", "pk": 2, "fields": {"author": 1, "article": 1, "content": "Very helpful, thanks!", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}},
+  {"model": "posts.comment", "pk": 3, "fields": {"author": 1, "article": 2, "content": "I love these travel tips.", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}},
+  {"model": "posts.comment", "pk": 4, "fields": {"author": 1, "article": 2, "content": "Can't wait to visit these places.", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}},
+  {"model": "posts.comment", "pk": 5, "fields": {"author": 1, "article": 3, "content": "Morning walks are indeed amazing!", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}},
+  {"model": "posts.comment", "pk": 6, "fields": {"author": 1, "article": 3, "content": "I feel more energized when I walk.", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}},
+  {"model": "posts.comment", "pk": 7, "fields": {"author": 1, "article": 4, "content": "Security tips are critical, thanks for sharing.", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}},
+  {"model": "posts.comment", "pk": 8, "fields": {"author": 1, "article": 5, "content": "ORM tricks saved me hours of work!", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}},
+  {"model": "posts.comment", "pk": 9, "fields": {"author": 1, "article": 6, "content": "Yummy recipes!", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}},
+  {"model": "posts.comment", "pk": 10, "fields": {"author": 1, "article": 7, "content": "REST vs GraphQL is a tough choice.", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}},
+  {"model": "posts.comment", "pk": 11, "fields": {"author": 1, "article": 8, "content": "Europe backpacking is on my list!", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}},
+  {"model": "posts.comment", "pk": 12, "fields": {"author": 1, "article": 9, "content": "select_related changed my life.", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}},
+  {"model": "posts.comment", "pk": 13, "fields": {"author": 1, "article": 10, "content": "Meal prep ideas look great!", "created_at": "2025-07-02T00:00:00Z", "updated_at": "2025-07-02T00:00:00Z"}}
+]
