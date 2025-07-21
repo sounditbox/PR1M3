@@ -9,6 +9,7 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         read_only_fields = ('id',)
+        fields = ('id', 'title')
 
     def validate_title(self, value):
         if len(value) < 3:
@@ -29,7 +30,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer()
+    author = AuthorSerializer(read_only=True)
     post = StringRelatedField()
 
     class Meta:
@@ -47,13 +48,11 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('title', 'content', 'created_at', 'updated_at', 'category',
-                  'tags', 'comments', 'author')
-        read_only_fields = ('created_at', 'updated_at', 'category', 'tags', 'comments')
-
+                  'tags', 'comments', 'author', 'views')
+        read_only_fields = ('created_at', 'updated_at', 'category', 'tags', 'comments', 'views')
 
 
 class PostListSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Post
         queryset = Post.objects.all()

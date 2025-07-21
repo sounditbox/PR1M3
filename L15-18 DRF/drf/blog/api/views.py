@@ -1,12 +1,17 @@
 from django.contrib.auth import authenticate, login
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from blog.api.filters import PostFilter
+from blog.api.paginations import CategoryPagination, CommentPagination, \
+    PostListPagination
 from blog.api.permissions import IsAuthorOrReadOnly, NoDeletePermission
 from blog.api.serializers import CommentSerializer, PostSerializer, \
     CategorySerializer
@@ -35,6 +40,7 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [NoDeletePermission | IsAdminUser]
+    pagination_class = CategoryPagination
 
 
 class CommentViewSet(ModelViewSet):
@@ -42,14 +48,22 @@ class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthorOrReadOnly]
+    pagination_class = CommentPagination
 
 
 class PostViewSet(ModelViewSet):
     model = Post
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().prefetch_related('tags').select_related('category')
     serializer_class = PostSerializer
     permission_classes = [IsAuthorOrReadOnly]
     authentication_classes = [JWTAuthentication]
+    pagination_class = PostListPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    # filterset_fields = ['category', 'tags']
+    filterset_class = PostFilter
+    search_fields = ['title', 'content', 'category__title', 'tags__title', 'author__username']
+    ordering_fields = ['created_at', 'updated_at', 'views']
+    ordering = ['-created_at']
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

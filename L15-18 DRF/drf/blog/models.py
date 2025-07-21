@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MaxLengthValidator
 from django.db import models
+
 from .validators import validate_spam, CommentMaxLengthValidator
 
 
