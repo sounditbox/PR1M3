@@ -17,8 +17,6 @@ router.register('categories', CategoryViewSet)
 
 
 urlpatterns = [
-    # path('comments/', CommentApiView.as_view(), name='comments'),
-    # path('comments/<int:id>', CommentApiView.as_view(), name='comment'),
     path('', include(router.urls)),
     path('session_auth/', SessionAuthView.as_view()),
     path('token_auth/', TokenAuthView.as_view()),

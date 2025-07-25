@@ -2,8 +2,9 @@ from django.contrib.auth import authenticate, login
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -18,6 +19,7 @@ from blog.api.serializers import CommentSerializer, PostSerializer, \
 from blog.models import Comment, Post, Category
 
 
+# Базовый уровень - APIView
 # class CommentApiView(APIView):
 #     def get(self, request, *args, **kwargs):
 #         if 'id' in kwargs:
@@ -34,6 +36,36 @@ from blog.models import Comment, Post, Category
 #             return Response(serializer.data)
 #         return Response(serializer.errors, status=400)
 
+# Уровень 1 - generics
+# class CommentDetailApiView(RetrieveUpdateDestroyAPIView):
+#     queryset = Comment.objects.all()
+#     serializer_class = CommentSerializer
+#
+#
+# class CommentListCreateApiView(ListCreateAPIView):
+#     queryset = Comment.objects.all()
+#     serializer_class = CommentSerializer
+#     pagination_class = CommentPagination
+
+# Уровень 2 - modelviewsets
+class CommentViewSet(ModelViewSet):
+    model = Comment
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthorOrReadOnly]
+    pagination_class = CommentPagination
+
+    @action(detail=False, permission_classes=[IsAdminUser], methods=['delete'])
+    def delete_all(self, request):
+        Comment.objects.all().delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['get'])
+    def get_all(self, request):
+        comments = Comment.objects.all()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class CategoryViewSet(ModelViewSet):
     model = Category
@@ -41,14 +73,6 @@ class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = [NoDeletePermission | IsAdminUser]
     pagination_class = CategoryPagination
-
-
-class CommentViewSet(ModelViewSet):
-    model = Comment
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-    permission_classes = [IsAuthorOrReadOnly]
-    pagination_class = CommentPagination
 
 
 class PostViewSet(ModelViewSet):
@@ -67,6 +91,17 @@ class PostViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(author=self.request.user)
+
+    def perform_partial_update(self, serializer):
+        serializer.save(author=self.request.user)
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        return super().get_permissions()
 
 
 class SessionAuthView(APIView):
